@@ -2,16 +2,15 @@ package com.eu.inpost.inposttest.service.dto.validator.impl;
 
 import com.eu.inpost.inposttest.service.dto.request.CartDto;
 import com.eu.inpost.inposttest.service.dto.request.DiscountDto;
-import com.eu.inpost.inposttest.service.dto.request.DiscountTypeDto;
 import com.eu.inpost.inposttest.service.dto.validator.DtoValidator;
 import com.eu.inpost.inposttest.service.dto.validator.expetion.NotValidCartDtoException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
-public class PercentageBasedDiscountValidator implements DtoValidator<CartDto> {
-    private static final int MAX_PERCENTAGE_VALUE = 99;
-    private static final String ERROR_MESSAGE = "percentage based discount can not has discount value more then 99";
+public class DiscountValueValidator implements DtoValidator<CartDto> {
+    private static final int MIN_VALUE_OF_DISCOUNT = 1;
+    private static final String ERROR_MESSAGE = "remove discount cause minimum discount value is 1";
 
     @Override
     public void validate(CartDto cartDto) {
@@ -20,15 +19,14 @@ public class PercentageBasedDiscountValidator implements DtoValidator<CartDto> {
         }
 
         boolean hasInvalidDiscount = cartDto.getAppliedDiscount().stream()
-                .anyMatch(this::isInvalidPercentageBasedDiscount);
+                .anyMatch(this::isInvalidDiscountValue);
 
         if (hasInvalidDiscount) {
             throw new NotValidCartDtoException(ERROR_MESSAGE);
         }
     }
 
-    private boolean isInvalidPercentageBasedDiscount(DiscountDto discountDto) {
-        return DiscountTypeDto.PERCENTAGE_BASED.equals(discountDto.getType())
-                && discountDto.getDiscountValue() > MAX_PERCENTAGE_VALUE;
+    boolean isInvalidDiscountValue(DiscountDto discountDto) {
+        return discountDto.getDiscountValue() < MIN_VALUE_OF_DISCOUNT;
     }
 }
