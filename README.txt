@@ -3,7 +3,8 @@ SET UP
 Ensure you have Maven and Docker installed on your machine
 free port 8080
 
-Run commands:
+enter to the root of the project (inposttest) and run commands:
+
 Step 1: Build the application using Maven:
 enter to the root of the project inposttest
 run  “mvn install”
